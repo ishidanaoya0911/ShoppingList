@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>[[${listNames[__${listId}__]}]]｜商品情報管理システム</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+	<header th:insert="~{parts :: navbar}"></header>
+
+	<div class="container">
+		<h1>[[${listNames[__${listId}__]}]]</h1>
+		<p>
+			<a class="btn btn-primary"
+					th:href="@{/item/add/{listId}(listId=${listId})}">
+				このリストへ商品情報を登録
+			</a>
+			<th:block th:each="listName,st:${listNames}">
+			<a class="btn btn-link" th:if="${listId != st.index}"
+					th:href="@{/list/{listId}(listId=${st.index})}">
+				[[${listName}]]へ
+			</a>
+			</th:block>
+		</p>
+
+		<form action="" method="post" id="itemListForm" th:object="${itemListForm}">
+			<table class="table table-striped table-bordered table-hover table-sm">
+				<thead class="thead-dark">
+					<tr>
+						<th class="text-center" scope="col">
+							<button type="button" class="btn btn-danger btn-sm" id="delete">
+								削除
+							</button>
+						</th>
+						<th scope="col" th:if="${listId == 0}">購入日</th>
+						<th scope="col" th:if="${listId != 0}">登録日</th>
+						<th scope="col">商品名</th>
+						<th scope="col">価格</th>
+						<th scope="col">検索</th>
+						<th scope="col">URL</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="item,st:*{itemList}">
+						<td class="text-center deleteCell">
+							<!-- idを保持するための隠し要素 -->
+							<input type="hidden" th:field="*{itemList[__${st.index}__].id}">
+							<!-- 削除用チェックボックス -->
+							<div class="form-group">
+								<div class="form-check">
+									<input type="checkbox"
+											class="form-check-input position-static checkDelete"
+											th:field="*{itemList[__${st.index}__].isDelete}"><br>
+								</div>
+							</div>
+						</td>
+						<td>[[${#dates.format(item.date, "yyyy/MM/dd")}]]</td>
+						<td scope="row">
+							<a th:href="@{/item/{id}(id=${item.id})}" th:title="${item.memo}">
+								[[${item.name}]]
+							</a>
+						</td>
+						<td class="text-right">
+							<th:block th:if="${item.price != null}">
+								[[${#numbers.formatInteger(item.price, 1, "COMMA")}]]<small>円</small>
+							</th:block>
+						</td>
+						<td>
+							<a class="btn btn-success btn-sm" role="button"
+									th:if="${!item.keywords.isEmpty()}"
+									th:href="@{https://www.google.com/search(q=${item.keywords})}"
+									th:target="_blank">
+								Google
+							</a>
+						</td>
+						<td>
+							<a class="btn btn-info btn-sm" role="button"
+									th:if="${!item.url.isEmpty()}"
+									th:href="${item.url}" th:target="_blank">
+								リンク
+							</a>
+						</td>
+					</tr>
+				<tbody>
+			</table>
+		</form>
+	</div>
+
+	<!-- 削除確認モーダル -->
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="deleteModalLabel">商品情報削除</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					一度削除された商品は元に戻すことはできません。<br>
+					選択された商品情報を本当に削除しますか？
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+					<button type="button" class="btn btn-danger" id="confirmDelete">削除</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+	<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+	<script>
+		$(document).ready(function () {
+			// 削除ボタンが押された時の処理
+			$("#delete").click(function() {
+				// チェックボックスに1つでもチェックがついていれば
+				if ($(".checkDelete:checked").length > 0) {
+					// 削除確認モーダルを呼び出す
+					$("#deleteModal").modal();
+				}
+			});
+			// モーダル内の削除ボタンが押された時の処理
+			$("#confirmDelete").click(function() {
+				// フォームをsubmit
+				$("#itemListForm").submit();
+			});
+
+			// 削除チェックボックスのあるセルをクリックした場合
+			$(".deleteCell").click(function () {
+				// セル内のチェックボックスのチェック状態を切り替える
+				let chk = $(this).find(".checkDelete");
+				if (chk.prop("checked")) {
+					chk.attr("checked", false).prop("checked", false).change();
+				}
+				else {
+					chk.attr("checked", true).prop("checked", true).change();
+				}
+			});
+			// チェックボックス自体をクリックした場合
+			$(".checkDelete").click(function (e) {
+				// セルをクリックした場合の処理とかぶらないように処理停止
+				e.stopPropagation();
+			});
+		});
+	</script>
+</body>
+</html>

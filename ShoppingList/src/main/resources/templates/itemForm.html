@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>商品情報[[${formName}]]｜商品情報管理システム</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+	<header th:insert="~{parts :: navbar}"></header>
+
+	<div class="container">
+		<h1>商品情報[[${formName}]]</h1>
+
+		<form action="" method="post" th:object="${item}">
+			<div>
+				<input type="hidden" th:field="*{id}">
+				<a class="btn btn-link" role="button" th:if="*{id != null}"
+						th:href="@{/item/{id}(id=*{id})}">
+					商品情報詳細に戻る
+				</a>
+				<input type="hidden" th:field="*{listId}">
+				<a class="btn btn-link" role="button"
+						th:href="@{/list/{listId}(listId=*{listId})}">
+					[[${listNames[__*{listId}__]}]]に戻る
+				</a>
+			</div>
+
+			<table class="table table-bordered table-hover table-sm" id="item">
+				<tbody>
+					<tr class="form-group">
+						<th class="table-dark" scope="col">
+							<label for="name" class="col-form-label">商品名</label>
+						</th>
+						<td>
+							<small class="form-text text-danger" th:errors="*{name}"></small>
+							<input type="text" class="form-control" id="name" th:field="*{name}">
+						</td>
+					</tr>
+					<tr class="form-group">
+						<th class="table-dark" scope="col">
+							<label for="price" class="col-form-label">価格(円)</label>
+						</th>
+						<td>
+							<small class="form-text text-danger" th:errors="*{price}"></small>
+							<input type="number" class="form-control" id="price" th:field="*{price}">
+						</td>
+					</tr>
+					<tr class="form-group" th:switch="${listIdToSave}">
+						<th:block th:case="0">
+							<th class="table-dark" scope="col">
+								<label for="date" class="col-form-label">購入日</label>
+							</th>
+							<td>
+								<small class="form-text text-danger" th:errors="*{date}"></small>
+								<input type="date" class="form-control" id="date" th:field="*{date}">
+							</td>
+						</th:block>
+						<th:block th:case="*">
+							<th class="table-dark" scope="col">
+								<label for="date" class="col-form-label">登録日</label>
+							</th>
+							<td>
+								<small class="form-text text-success" id="dateHelpBlock">
+									登録日は自動的に更新されます
+								</small>
+								<!-- 表示用 -->
+								<input type="date" class="form-control" id="date" th:field="*{date}"
+										 aria-describedby="dateHelpBlock" disabled>
+								<!-- 保持用 -->
+								<input type="hidden" class="form-control" th:field="*{date}">
+							</td>
+						</th:block>
+					</tr>
+					<tr class="form-group">
+						<th class="table-dark" scope="col">
+							<label for="keyword0" class="col-form-label">キーワード</label>
+						</th>
+						<td>
+							<div th:each="i:${#numbers.sequence(0, maxKeywords - 1)}">
+								<small class="form-text text-danger"
+										th:errors="*{keywordList[__${i}__].word}"></small>
+								<input type="text" class="form-control form-control-sm" th:id="keyword__${i}__"
+										th:field="*{keywordList[__${i}__].word}">
+							</div>
+						</td>
+					</tr>
+					<tr class="form-group">
+						<th class="table-dark" scope="col">
+							<label for="url" class="col-form-label">リンク先URL</label>
+						</th>
+						<td>
+							<small class="form-text text-danger" th:errors="*{url}"></small>
+							<input type="url" class="form-control" id="url" th:field="*{url}">
+						</td>
+					</tr>
+					<tr>
+						<th class="table-dark" scope="col">
+							<label for="memo" class="col-form-label">メモ</label>
+						</th>
+						<td>
+							<small class="form-text text-danger" th:errors="*{memo}"></small>
+							<textarea class="form-control" id="memo" th:field="*{memo}"></textarea>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<p>
+				<button type="submit" class="btn btn-primary">
+					[[${listNames[__${listIdToSave}__]}]]に保存
+				</button>
+			</p>
+		</form>
+	</div>
+
+	<script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+	<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

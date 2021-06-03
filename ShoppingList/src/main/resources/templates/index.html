@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>説明｜商品情報管理システム</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+	<div class="container-fluid">
+		<nav class="navbar navbar-dark bg-dark fixed-top">
+			<div class="container-fulid">
+				<a class="navbar-brand">商品情報管理システム</a>
+			</div><!-- /.container -->
+			<ul class="navbar-nav">
+				<li class="nav-item">
+					<a class="btn btn-primary" th:href="@{/login}">ログイン画面へ</a>
+				</li>
+			</ul>
+		</nav>
+	</div><!-- /.container-fluid -->
+
+	<div class="container">
+		<h2>はじめに</h2>
+		<p>
+			現在のところ、このシステムは単一ユーザー対応です。<br>
+			ログインID「taro」、パスワード「abcd」でログインできます。
+		</p>
+		<h2>概要</h2>
+		<p>
+			商品の購入履歴やお気に入りをリスト形式で管理するシステム。<br>
+			商品の情報は自分で登録する。<br>
+			リンク先のURLを保存したり、登録したキーワードを使用した検索を行える。
+		</p>
+		<h2>開発経緯</h2>
+		<p>
+			商品を購入する際、実店舗や通販サイトを含む様々な店舗から、商品の価格などの情報を集めることが多いが、集めた情報を比較する場合に、一元的なリスト形式で見ることができれば便利だと思い作成した。<br>
+			また、商品の情報を再度検索する場合に、検索に使用したキーワードを保存できれば検索の手間が省けると思った。<br>
+			技術的には、データベースのCRUDを用いたデータベース管理システムを作成できることを示すため。
+		</p>
+		<h2>開発環境</h2>
+		<table class="table table-bordered table-sm">
+			<tbody>
+				<tr>
+					<th>OS</th>
+					<td>Windows, Linux</td>
+				</tr>
+				<tr>
+					<th>言語</th>
+					<td>Java SE 11, HTML, CSS, JavaScript, JQuery 3.6.0</td>
+				</tr>
+				<tr>
+					<th>データベース</th>
+					<td>MySQL</td>
+				</tr>
+				<tr>
+					<th>フレームワーク</th>
+					<td>Bootstrap 4.6.0, Spring Boot 2.4.5, MyBatis 2.1.4</td>
+				</tr>
+				<tr>
+					<th>ツール</th>
+					<td>Eclipse, MySQL Workbench 8.0 CE</td>
+				</tr>
+			</tbody>
+		</table>
+		<h2>苦労した点</h2>
+		<ul>
+			<li>一括削除機能
+				<p>
+					チェックを付けた項目を判別するための処理や、一つもチェックが付けられていない場合の判定処理、セルをクリックした場合でもチェックボックスの状態を変化させる処理など、この部分の実装に最も苦労した。
+				</p>
+			</li>
+			<li>登録フォームの入力値検証
+				<p>
+					フォームに入力された値、特にリンク先URLに入力された値に対して、自分で決めたルールを適応させるためにはどうしたらいいのか、かなり試行錯誤した。<br>
+				</p>
+			</li>
+			<li>デザイン
+				<p>
+					デザインについては全く触れて来なかったため、ひと目でわかりやすいシステムになっていないと思われる。Bootstrapを使用してはみたものの、なかなか思い通りには表示されなかった。
+				</p>
+			</li>
+		</ul>
+		<h2>未実装機能</h2>
+		<ul>
+			<li>複数ユーザー対応</li>
+			<li>リストの並べ替え、検索</li>
+			<li>キーワードから通販サイトの検索を直接使用する</li>
+		</ul>
+	</div>
+
+	<script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+	<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

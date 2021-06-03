@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zdrv.app.dao.ItemDao">
+
+	<resultMap type="com.zdrv.app.domain.Item" id="ItemMap">
+		<id property="id" column="id" />
+		<result property="listId" column="list_id" />
+		<result property="date" column="date" />
+		<result property="name" column="name" />
+		<result property="price" column="price" />
+		<result property="url" column="url" />
+		<result property="memo" column="memo" />
+		<collection property="keywordList" ofType="com.zdrv.app.domain.Keyword">
+			<result property="id" column="word_id" />
+			<result property="word" column="word" />
+		</collection>
+	</resultMap>
+
+	<select id="selectAll" resultMap="ItemMap">
+		SELECT items.*, keywords.id AS keyword_id, keywords.word
+		FROM items
+		LEFT JOIN item_keywords
+		ON items.id = item_keywords.item_id
+		LEFT JOIN keywords
+		ON item_keywords.keyword_id = keywords.id
+		ORDER BY items.date DESC
+	</select>
+
+	<select id="selectAllByListId" parameterType="int" resultMap="ItemMap">
+		SELECT items.*, keywords.id AS word_id, keywords.word
+		FROM items
+		LEFT JOIN item_keywords
+		ON items.id = item_keywords.item_id
+		LEFT JOIN keywords
+		ON item_keywords.keyword_id = keywords.id
+		WHERE items.list_id = #{listId}
+		ORDER BY items.date DESC
+	</select>
+
+	<select id="selectById" parameterType="int" resultMap="ItemMap">
+		SELECT items.*, keywords.id AS word_id, keywords.word
+		FROM items
+		LEFT JOIN item_keywords
+		ON items.id = item_keywords.item_id
+		LEFT JOIN keywords
+		ON item_keywords.keyword_id = keywords.id
+		WHERE items.id = #{id}
+	</select>
+
+	<insert id="insert" parameterType="com.zdrv.app.domain.Item"
+			keyProperty="id" useGeneratedKeys="true">
+		INSERT INTO items (list_id, date, name, price, url, memo)
+		VALUES (#{listId}, #{date}, #{name}, #{price}, #{url}, #{memo})
+	</insert>
+
+	<update id="update" parameterType="com.zdrv.app.domain.Item">
+		UPDATE items SET
+			list_id = #{listId}, date = #{date}, name = #{name},
+			price = #{price}, url = #{url}, memo = #{memo}
+		WHERE id = #{id}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		DELETE FROM items
+		WHERE id = #{id}
+	</delete>
+
+</mapper>

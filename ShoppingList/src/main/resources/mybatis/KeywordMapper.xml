@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zdrv.app.dao.KeywordDao">
+
+	<select id="selectAll" resultType="com.zdrv.app.domain.Keyword">
+		SELECT * FROM keywords
+	</select>
+
+	<select id="selectAllByItemId" parameterType="int" resultType="com.zdrv.app.domain.Keyword">
+		SELECT * FROM keywords
+		JOIN item_keywords
+		ON keywords.id = item_keywords.keyword_id
+		WHERE item_keywords.item_id = #{itemId}
+	</select>
+
+	<select id="selectByWord" parameterType="string" resultType="com.zdrv.app.domain.Keyword">
+		SELECT * FROM keywords
+		WHERE keywords.word = #{word}
+	</select>
+
+	<insert id="insert" parameterType="com.zdrv.app.domain.Keyword"
+			keyProperty="id" useGeneratedKeys="true">
+		INSERT INTO keywords (word) VALUES (#{word})
+	</insert>
+
+	<delete id="delete" parameterType="int">
+		DELETE FROM items
+		WHERE id = #{id}
+	</delete>
+
+	<insert id="insertRelation">
+		INSERT INTO item_keywords
+		VALUES (#{itemId}, #{keywordId})
+	</insert>
+
+	<delete id="deleteRelation" parameterType="int">
+		DELETE FROM item_keywords
+		WHERE item_id = #{itemId}
+	</delete>
+
+</mapper>

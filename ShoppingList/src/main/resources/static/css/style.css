@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+body {
+	padding-top: 70px;
+}
+
+#item th {
+	width: 120px;
+}
+
+#item td#url {
+	word-break: break-all;
+	word-wrap: break-word;
+}
+
+#item textarea {
+	resize: none;
+	height: 150px;
+}
